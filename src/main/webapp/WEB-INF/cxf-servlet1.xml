@@ -1,0 +1,30 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+
+
+    <jaxws:endpoint id="service1"
+                    implementor="#webService1Impl" address="/service1">
+
+
+    </jaxws:endpoint>
+
+    <bean id="webService1Impl" class="cxf.headers.bridge.WebService1Impl">
+        <property name="webService2Client" ref="webService2Client"/>
+        <property name="webServiceContext">
+            <bean class="org.apache.cxf.jaxws.context.WebServiceContextImpl"/>
+        </property>
+    </bean>
+
+
+    <bean id="webService2Client" class="cxf.headers.bridge.WebService2"
+          factory-bean="clientFactory" factory-method="create"/>
+
+    <bean id="clientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="cxf.headers.bridge.WebService2"/>
+        <property name="address" value="http://localhost:8080/ws/service2"/>
+    </bean>
+
+
+</beans>
